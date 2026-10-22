@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { FaPlus, FaSearch, FaExclamationTriangle } from "react-icons/fa";
+import { FaPlus, FaSearch, FaExclamationTriangle, FaEdit, FaTrash, FaTimes, FaBoxOpen } from "react-icons/fa";
 import { MdRefresh } from "react-icons/md";
 import { motion } from "framer-motion";
 
@@ -12,6 +12,7 @@ export default function ProductsPage() {
     const [search, setSearch] = useState("");
     const [loading, setLoading] = useState(true);
     const [modalOpen, setModalOpen] = useState(false);
+    const [editingId, setEditingId] = useState(null);
 
     // Form State
     const [formData, setFormData] = useState({
@@ -51,14 +52,17 @@ export default function ProductsPage() {
     const handleCreateProduct = async (e) => {
         e.preventDefault();
         try {
-            const res = await fetch(`${API_BASE}/api/products`, {
-                method: "POST",
+            const url = editingId ? `${API_BASE}/api/products/${editingId}` : `${API_BASE}/api/products`;
+            const method = editingId ? "PUT" : "POST";
+            const res = await fetch(url, {
+                method: method,
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(formData),
             });
             const data = await res.json();
             if (data.success) {
                 setModalOpen(false);
+                setEditingId(null);
                 setFormData({
                     title: "",
                     sku: "",
@@ -74,6 +78,40 @@ export default function ProductsPage() {
             }
         } catch (err) {
             console.error("Submission error:", err);
+        }
+    };
+
+    //  Edit button e caple modale ager data boshanor handler
+    const handleOpenEdit = (product) => {
+        setEditingId(product._id);
+        setFormData({
+            title: product.title,
+            sku: product.sku,
+            category: product.category || "General",
+            costPrice: product.costPrice,
+            sellingPrice: product.sellingPrice,
+            stockQuantity: product.stockQuantity,
+            lowStockThreshold: product.lowStockThreshold || 5,
+        });
+        setModalOpen(true);
+    };
+
+    //  product delete handler
+    const handleDelete = async (id, title) => {
+        if (!confirm(`Are you sure you want to remove "${title}"?`)) return;
+
+        try {
+            const res = await fetch(`${API_BASE}/api/products/${id}`, {
+                method: "DELETE",
+            });
+            const data = await res.json();
+            if (data.success) {
+                fetchProducts();
+            } else {
+                alert(data.message || "Failed to delete");
+            }
+        } catch (err) {
+            console.error("Delete error:", err);
         }
     };
 
@@ -126,16 +164,17 @@ export default function ProductsPage() {
                                 <th className="p-4">Selling Price</th>
                                 <th className="p-4">Stock</th>
                                 <th className="p-4">Status</th>
+                                <th className="p-4 text-center">Action</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-100">
                             {loading ? (
                                 <tr>
-                                    <td colSpan="6" className="p-8 text-center text-slate-400">Loading products...</td>
+                                    <td colSpan="7" className="p-8 text-center text-slate-400">Loading products...</td>
                                 </tr>
                             ) : products.length === 0 ? (
                                 <tr>
-                                    <td colSpan="6" className="p-8 text-center text-slate-400">No products found in inventory.</td>
+                                    <td colSpan="7" className="p-8 text-center text-slate-400">No products found in inventory.</td>
                                 </tr>
                             ) : (
                                 products.map((p, index) => {
@@ -192,6 +231,24 @@ export default function ProductsPage() {
                                                         Available
                                                     </span>
                                                 )}
+                                            </td>
+                                            <td className="p-4 text-center">
+                                                <div className="flex items-center justify-center gap-2">
+                                                    <button
+                                                        onClick={() => handleOpenEdit(p)}
+                                                        className="p-1.5 text-indigo-600 hover:bg-indigo-50 rounded-lg transition cursor-pointer"
+                                                        title="Edit Product"
+                                                    >
+                                                        <FaEdit className="text-sm" />
+                                                    </button>
+                                                    <button
+                                                        onClick={() => handleDelete(p._id, p.title)}
+                                                        className="p-1.5 text-rose-500 hover:bg-rose-50 rounded-lg transition cursor-pointer"
+                                                        title="Delete Product"
+                                                    >
+                                                        <FaTrash className="text-xs" />
+                                                    </button>
+                                                </div>
                                             </td>
                                         </motion.tr>
                                     );
