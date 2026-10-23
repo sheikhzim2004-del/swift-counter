@@ -20,7 +20,7 @@ export default function Sidebar() {
     const pathname = usePathname();
 
     return (
-        <aside className="w-64 bg-slate-900 text-white min-h-screen flex flex-col justify-between p-4 border-r border-slate-800 shrink-0">
+        <aside className="w-64 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 min-h-screen flex flex-col justify-between p-4 border-r-4 border-slate-200 dark:border-slate-800 shrink-0 transition-colors duration-200">
             <div>
                 {/* Brand Logo */}
                 <div className="flex items-center gap-3 px-2 py-4 mb-6">
@@ -28,7 +28,7 @@ export default function Sidebar() {
                         SC
                     </div>
                     <div>
-                        <h1 className="text-lg font-bold tracking-wide text-white">SwiftCounter</h1>
+                        <h1 className="text-lg font-bold tracking-wide dark:text-white">SwiftCounter</h1>
                         <p className="text-xs text-slate-400">Retail POS v1.0</p>
                     </div>
                 </div>

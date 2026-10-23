@@ -121,22 +121,22 @@ export default function DashboardPage() {
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: idx * 0.1, duration: 0.35 }}
-              className="p-5 bg-white border border-slate-200/80 rounded-2xl shadow-sm hover:shadow-md transition flex flex-col justify-between"
+              className="p-5 bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-2xl shadow-sm hover:shadow-md transition flex flex-col justify-between"
             >
               <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-slate-500 tracking-wide uppercase">
+                <span className="text-xs font-bold text-slate-500 dark:text-slate-400 tracking-wide uppercase">
                   {stat.title}
                 </span>
-                <div className={`p-2.5 rounded-xl ${stat.bgLight} ${stat.accent}`}>
+                <div className={`p-2.5 rounded-xl ${stat.bgLight} dark:bg-slate-800 ${stat.accent} dark:text-indigo-400`}>
                   <Icon className="text-base" />
                 </div>
               </div>
 
               <div className="mt-4">
-                <h3 className="text-3xl font-black text-slate-900 tracking-tight">
+                <h3 className="text-3xl font-black text-slate-900 dark:text-slate-300 tracking-tight">
                   {loading ? "..." : stat.value}
                 </h3>
-                <p className="text-xs font-medium text-slate-400 mt-1">
+                <p className="text-xs font-medium text-slate-400 dark:text-slate-500 mt-1">
                   {stat.subtitle}
                 </p>
               </div>
@@ -150,22 +150,22 @@ export default function DashboardPage() {
         initial={{ opacity: 0, y: 15 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3 }}
-        className="bg-white border border-slate-200/80 rounded-2xl shadow-sm overflow-hidden"
+        className="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-2xl shadow-sm overflow-hidden transition-colors"
       >
-        <div className="p-5 border-b border-slate-100 flex items-center justify-between">
+        <div className="p-5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
-            <div className="p-2 rounded-lg bg-indigo-50 text-indigo-600">
+            <div className="p-2 rounded-lg bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 border border-indigo-100 dark:border-indigo-800/50">
               <MdOutlineShoppingBag className="text-lg" />
             </div>
             <div>
-              <h2 className="font-bold text-sm text-slate-900">Recent Completed Orders</h2>
-              <p className="text-[11px] text-slate-400">Latest checkout memos synced with database</p>
+              <h2 className="font-bold text-sm text-slate-900 dark:text-white">Recent Completed Orders</h2>
+              <p className="text-[11px] text-slate-400 dark:text-slate-500">Latest checkout memos synced with database</p>
             </div>
           </div>
 
           <Link
             href="/sales"
-            className="text-xs font-bold text-indigo-600 hover:text-indigo-700 flex items-center gap-1.5"
+            className="text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 flex items-center gap-1.5 transition-colors"
           >
             Full History <FaArrowRight className="text-[10px]" />
           </Link>
@@ -174,7 +174,7 @@ export default function DashboardPage() {
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs border-collapse">
             <thead>
-              <tr className="bg-slate-50/80 text-slate-500 font-bold uppercase text-[10px] tracking-wider border-b border-slate-100">
+              <tr className="bg-slate-50/80 dark:bg-slate-950/60 text-slate-500 dark:text-slate-400 font-bold uppercase text-[10px] tracking-wider border-b border-slate-100 dark:border-slate-800">
                 <th className="py-3 px-5">Invoice</th>
                 <th className="py-3 px-5">Customer</th>
                 <th className="py-3 px-5">Items</th>
@@ -182,39 +182,39 @@ export default function DashboardPage() {
                 <th className="py-3 px-5 text-right">Total</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100 font-medium text-slate-700">
+            <tbody className="divide-y divide-slate-100 dark:divide-slate-800 font-medium text-slate-700 dark:text-slate-200">
               {loading ? (
                 <tr>
-                  <td colSpan="5" className="py-8 text-center text-slate-400">
+                  <td colSpan="5" className="py-8 text-center text-slate-400 dark:text-slate-500">
                     Loading recent orders...
                   </td>
                 </tr>
               ) : metrics.recentSales.length === 0 ? (
                 <tr>
-                  <td colSpan="5" className="py-8 text-center text-slate-400">
+                  <td colSpan="5" className="py-8 text-center text-slate-400 dark:text-slate-500">
                     No sales recorded yet. Process an order from POS register.
                   </td>
                 </tr>
               ) : (
                 metrics.recentSales.map((sale) => (
-                  <tr key={sale._id} className="hover:bg-slate-50/60 transition">
-                    <td className="py-3 px-5 font-mono font-bold text-indigo-600">
+                  <tr key={sale._id} className="hover:bg-slate-50/60 dark:hover:bg-slate-800/40 transition">
+                    <td className="py-3 px-5 font-mono font-bold text-indigo-600 dark:text-indigo-400">
                       {sale.invoiceNumber}
                     </td>
-                    <td className="py-3 px-5 font-semibold text-slate-900">
+                    <td className="py-3 px-5 font-semibold text-slate-900 dark:text-slate-100">
                       {sale.customerName || "Walk-in"}
                     </td>
                     <td className="py-3 px-5">
-                      <span className="bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full font-bold">
+                      <span className="bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200/60 dark:border-slate-700 px-2 py-0.5 rounded-full font-bold">
                         {sale.items?.length || 0}
                       </span>
                     </td>
                     <td className="py-3 px-5">
-                      <span className="text-[11px] font-bold text-slate-600">
+                      <span className="text-[11px] font-bold text-slate-600 dark:text-slate-300">
                         {sale.paymentMethod}
                       </span>
                     </td>
-                    <td className="py-3 px-5 text-right font-black text-slate-900">
+                    <td className="py-3 px-5 text-right font-black text-slate-900 dark:text-white">
                       ৳{sale.total}
                     </td>
                   </tr>

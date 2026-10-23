@@ -120,8 +120,8 @@ export default function ProductsPage() {
             {/* Top Header */}
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
-                    <h1 className="text-2xl font-bold text-slate-900">Products & Inventory</h1>
-                    <p className="text-sm text-slate-500">Track and manage store item stock levels</p>
+                    <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Products & Inventory</h1>
+                    <p className="text-sm text-slate-500 dark:text-slate-400">Track and manage store item stock levels</p>
                 </div>
                 <button
                     onClick={() => setModalOpen(true)}
@@ -132,15 +132,15 @@ export default function ProductsPage() {
             </div>
 
             {/* Filter and Search Bar */}
-            <div className="flex gap-4 items-center bg-white p-3 rounded-xl border border-slate-200">
+            <div className="flex gap-4 items-center bg-white p-3 rounded-xl border border-slate-200 dark:border-slate-800 dark:bg-slate-900">
                 <div className="relative flex-1">
-                    <FaSearch className="absolute left-3.5 top-3 text-slate-400 text-sm" />
+                    <FaSearch className="absolute left-3.5 top-3 text-slate-400 dark:text-slate-500 text-sm" />
                     <input
                         type="text"
                         placeholder="Search by title or SKU..."
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
-                        className="w-full pl-10 pr-4 py-1.5 text-sm rounded-lg border border-slate-200 focus:outline-none focus:border-indigo-600"
+                        className="w-full pl-10 pr-4 py-1.5 text-sm rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-indigo-600 dark:focus:border-indigo-500 transition-colors"
                     />
                 </div>
                 <button
@@ -153,10 +153,10 @@ export default function ProductsPage() {
             </div>
 
             {/* Products Table */}
-            <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm">
+            <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm transition-colors">
                 <div className="overflow-x-auto">
                     <table className="w-full text-left border-collapse text-sm">
-                        <thead className="bg-slate-50 border-b border-slate-200 text-slate-600 font-semibold">
+                        <thead className="bg-slate-50 dark:bg-slate-950/60 border-b border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 font-semibold">
                             <tr>
                                 <th className="p-4">Product Info</th>
                                 <th className="p-4">Category</th>
@@ -167,14 +167,18 @@ export default function ProductsPage() {
                                 <th className="p-4 text-center">Action</th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-slate-100">
+                        <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
                             {loading ? (
                                 <tr>
-                                    <td colSpan="7" className="p-8 text-center text-slate-400">Loading products...</td>
+                                    <td colSpan="7" className="p-8 text-center text-slate-400 dark:text-slate-500">
+                                        Loading products...
+                                    </td>
                                 </tr>
                             ) : products.length === 0 ? (
                                 <tr>
-                                    <td colSpan="7" className="p-8 text-center text-slate-400">No products found in inventory.</td>
+                                    <td colSpan="7" className="p-8 text-center text-slate-400 dark:text-slate-500">
+                                        No products found in inventory.
+                                    </td>
                                 </tr>
                             ) : (
                                 products.map((p, index) => {
@@ -191,59 +195,68 @@ export default function ProductsPage() {
                                                 delay: index * 0.04,
                                                 ease: "easeOut",
                                             }}
-                                            className="hover:bg-slate-50/70 transition"
+                                            className="hover:bg-slate-50/70 dark:hover:bg-slate-800/50 transition-colors"
                                         >
                                             <td className="p-4">
-                                                <p className="font-semibold text-slate-800 text-xl text-violet-600">{p.title}</p>
-                                                <p className="text-[11px] font-mono text-slate-400 mt-0.5">SKU: {p.sku}</p>
+                                                <p className="font-semibold text-slate-900 dark:text-slate-100 text-sm">
+                                                    {p.title}
+                                                </p>
+                                                <p className="text-[11px] font-mono text-slate-400 dark:text-slate-500 mt-0.5">
+                                                    SKU: {p.sku}
+                                                </p>
                                             </td>
 
                                             <td className="p-4">
-                                                <span className="px-2.5 py-0.5 text-xs font-medium rounded-md bg-slate-100 text-slate-600 border border-slate-200">
+                                                <span className="px-2.5 py-0.5 text-xs font-medium rounded-md bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
                                                     {p.category}
                                                 </span>
                                             </td>
 
-                                            <td className="p-4 text-sm text-slate-500 font-medium">৳{p.costPrice}</td>
-
-                                            <td className="p-4">
-                                                <span className="text-sm font-bold text-violet-600">৳{p.sellingPrice}</span>
+                                            <td className="p-4 text-sm text-slate-500 dark:text-slate-400 font-medium">
+                                                ৳{p.costPrice}
                                             </td>
 
                                             <td className="p-4">
-                                                <span className="text-sm font-semibold text-slate-700 bg-slate-50 px-2.5 py-1 rounded-md border border-slate-200">
+                                                <span className="text-sm font-bold text-violet-600 dark:text-violet-400">
+                                                    ৳{p.sellingPrice}
+                                                </span>
+                                            </td>
+
+                                            <td className="p-4">
+                                                <span className="text-sm font-semibold text-slate-700 dark:text-slate-200 bg-slate-50 dark:bg-slate-800 px-2.5 py-1 rounded-md border border-slate-200 dark:border-slate-800">
                                                     {p.stockQuantity}
                                                 </span>
                                             </td>
 
                                             <td className="p-4">
                                                 {isOutOfStock ? (
-                                                    <span className="inline-flex items-center px-2.5 py-1 text-xs rounded-full bg-rose-50 text-rose-600 font-semibold border border-rose-200">
+                                                    <span className="inline-flex items-center px-2.5 py-1 text-xs rounded-full bg-rose-50 dark:bg-rose-950/50 text-rose-600 dark:text-rose-400 font-semibold border border-rose-200 dark:border-rose-800/60">
                                                         Out of Stock
                                                     </span>
                                                 ) : isLowStock ? (
-                                                    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs rounded-full bg-amber-50 text-amber-600 font-semibold border border-amber-200 w-max">
+                                                    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs rounded-full bg-amber-50 dark:bg-amber-950/50 text-amber-600 dark:text-amber-400 font-semibold border border-amber-200 dark:border-amber-800/60">
                                                         <FaExclamationTriangle className="text-[10px]" /> Low Stock
                                                     </span>
                                                 ) : (
-                                                    <span className="inline-flex items-center px-2.5 py-1 text-xs rounded-full bg-emerald-50 text-emerald-600 font-semibold border border-emerald-200">
-                                                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1.5"></span>
+                                                    <span className="inline-flex items-center px-2.5 py-1 text-xs rounded-full bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 font-semibold border border-emerald-200 dark:border-emerald-800/60">
+                                                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1.5" />
                                                         Available
                                                     </span>
                                                 )}
                                             </td>
+
                                             <td className="p-4 text-center">
                                                 <div className="flex items-center justify-center gap-2">
                                                     <button
                                                         onClick={() => handleOpenEdit(p)}
-                                                        className="p-1.5 text-indigo-600 hover:bg-indigo-50 rounded-lg transition cursor-pointer"
+                                                        className="p-1.5 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-950/50 rounded-lg transition-colors cursor-pointer"
                                                         title="Edit Product"
                                                     >
                                                         <FaEdit className="text-sm" />
                                                     </button>
                                                     <button
                                                         onClick={() => handleDelete(p._id, p.title)}
-                                                        className="p-1.5 text-rose-500 hover:bg-rose-50 rounded-lg transition cursor-pointer"
+                                                        className="p-1.5 text-rose-500 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/50 rounded-lg transition-colors cursor-pointer"
                                                         title="Delete Product"
                                                     >
                                                         <FaTrash className="text-xs" />
@@ -261,87 +274,88 @@ export default function ProductsPage() {
 
             {/* Add Product Modal */}
             {modalOpen && (
-                <div className="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-sm flex justify-center items-center p-4">
-                    <div className="bg-white rounded-xl max-w-lg w-full p-6 shadow-xl border border-slate-100">
-                        <h2 className="text-lg font-bold text-slate-900 mb-4">Add New Item to Inventory</h2>
+                <div className="fixed inset-0 z-50 bg-slate-900/60 dark:bg-slate-950/80 backdrop-blur-sm flex justify-center items-center p-4">
+                    <div className="bg-white dark:bg-slate-900 rounded-xl max-w-lg w-full p-6 shadow-xl border border-slate-100 dark:border-slate-800 transition-colors">
+                        <h2 className="text-lg font-bold text-slate-900 dark:text-white mb-4">Add New Item to Inventory</h2>
                         <form onSubmit={handleCreateProduct} className="space-y-4">
                             <div>
-                                <label className="text-xs font-semibold text-slate-900">Product Title</label>
+                                <label className="text-xs font-semibold text-slate-900 dark:text-slate-200">Product Title</label>
                                 <input
                                     required
                                     type="text"
                                     value={formData.title}
                                     onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                                     placeholder="e.g. Dettol Soap 75g"
-                                    className="w-full mt-1 p-2 border text-slate-900 rounded-lg text-sm border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-600"
+                                    className="w-full mt-1 p-2 border bg-white dark:bg-slate-800/80 text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 rounded-lg text-sm border-slate-200 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-600 dark:focus:ring-indigo-500 transition-colors"
                                 />
                             </div>
 
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
-                                    <label className="text-xs font-semibold text-slate-900">SKU / Barcode</label>
+                                    <label className="text-xs font-semibold text-slate-900 dark:text-slate-200">SKU / Barcode</label>
                                     <input
                                         required
                                         type="text"
                                         value={formData.sku}
                                         onChange={(e) => setFormData({ ...formData, sku: e.target.value })}
                                         placeholder="e.g. DET-01"
-                                        className="w-full mt-1 p-2 border text-slate-900 rounded-lg text-sm border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-600"
+                                        className="w-full mt-1 p-2 border bg-white dark:bg-slate-800/80 text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 rounded-lg text-sm border-slate-200 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-600 dark:focus:ring-indigo-500 transition-colors"
                                     />
                                 </div>
                                 <div>
-                                    <label className="text-xs font-semibold text-slate-900">Category</label>
+                                    <label className="text-xs font-semibold text-slate-900 dark:text-slate-200">Category</label>
                                     <input
                                         required
                                         type="text"
                                         value={formData.category}
                                         onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                                        className="w-full mt-1 p-2 border text-slate-900 rounded-lg text-sm border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-600"
+                                        placeholder="e.g. Toiletries"
+                                        className="w-full mt-1 p-2 border bg-white dark:bg-slate-800/80 text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 rounded-lg text-sm border-slate-200 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-600 dark:focus:ring-indigo-500 transition-colors"
                                     />
                                 </div>
                             </div>
 
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
-                                    <label className="text-xs font-semibold text-slate-900">Cost Price (৳)</label>
+                                    <label className="text-xs font-semibold text-slate-900 dark:text-slate-200">Cost Price (৳)</label>
                                     <input
                                         required
                                         type="number"
                                         value={formData.costPrice}
                                         onChange={(e) => setFormData({ ...formData, costPrice: e.target.value })}
-                                        className="w-full mt-1 p-2 border text-slate-900 rounded-lg text-sm border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-600"
+                                        className="w-full mt-1 p-2 border bg-white dark:bg-slate-800/80 text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 rounded-lg text-sm border-slate-200 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-600 dark:focus:ring-indigo-500 transition-colors"
                                     />
                                 </div>
                                 <div>
-                                    <label className="text-xs font-semibold text-slate-900">Selling Price (৳)</label>
+                                    <label className="text-xs font-semibold text-slate-900 dark:text-slate-200">Selling Price (৳)</label>
                                     <input
                                         required
                                         type="number"
                                         value={formData.sellingPrice}
                                         onChange={(e) => setFormData({ ...formData, sellingPrice: e.target.value })}
-                                        className="w-full mt-1 p-2 border text-slate-900 rounded-lg text-sm border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-600"
+                                        className="w-full mt-1 p-2 border bg-white dark:bg-slate-800/80 text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 rounded-lg text-sm border-slate-200 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-600 dark:focus:ring-indigo-500 transition-colors"
                                     />
                                 </div>
                             </div>
 
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
-                                    <label className="text-xs font-semibold text-slate-900">Initial Stock</label>
+                                    <label className="text-xs font-semibold text-slate-900 dark:text-slate-200">Initial Stock</label>
                                     <input
                                         required
                                         type="number"
                                         value={formData.stockQuantity}
                                         onChange={(e) => setFormData({ ...formData, stockQuantity: e.target.value })}
-                                        className="w-full mt-1 p-2 border text-slate-900 rounded-lg text-sm border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-600"
+                                        className="w-full mt-1 p-2 border bg-white dark:bg-slate-800/80 text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 rounded-lg text-sm border-slate-200 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-600 dark:focus:ring-indigo-500 transition-colors"
                                     />
                                 </div>
                                 <div>
-                                    <label className="text-xs font-semibold text-slate-900">Low Stock Alert at</label>
+                                    <label className="text-xs font-semibold text-slate-900 dark:text-slate-200">Low Stock Alert at</label>
                                     <input
                                         type="number"
                                         value={formData.lowStockThreshold}
                                         onChange={(e) => setFormData({ ...formData, lowStockThreshold: e.target.value })}
-                                        className="w-full mt-1 p-2 border rounded-lg text-sm border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-600"
+                                        className="w-full mt-1 p-2 border bg-white dark:bg-slate-800/80 text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 rounded-lg text-sm border-slate-200 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-600 dark:focus:ring-indigo-500 transition-colors"
                                     />
                                 </div>
                             </div>
@@ -350,13 +364,13 @@ export default function ProductsPage() {
                                 <button
                                     type="button"
                                     onClick={() => setModalOpen(false)}
-                                    className="px-4 py-2 border border-slate-200 rounded-lg text-sm text-slate-600 hover:bg-slate-50 font-medium"
+                                    className="px-4 py-2 border border-slate-200 dark:border-slate-700 rounded-lg text-sm text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 font-medium transition-colors"
                                 >
                                     Cancel
                                 </button>
                                 <button
                                     type="submit"
-                                    className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-sm font-medium"
+                                    className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-sm font-medium transition-colors"
                                 >
                                     Save Product
                                 </button>

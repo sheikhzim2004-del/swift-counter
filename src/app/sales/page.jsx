@@ -58,10 +58,10 @@ export default function SalesHistoryPage() {
             {/* Header section with Stats */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
-                    <h1 className="text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2">
+                    <h1 className="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
                         <FaReceipt className="text-indigo-600" /> Sales & Invoices
                     </h1>
-                    <p className="text-xs text-slate-500 mt-1">
+                    <p className="text-xs text-slate-500 dark:text-slate-400">
                         Track daily transaction logs, audit bills and print receipts
                     </p>
                 </div>
@@ -74,17 +74,17 @@ export default function SalesHistoryPage() {
                         placeholder="Search invoice or customer..."
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
-                        className="w-full pl-10 pr-4 py-2 bg-white text-slate-900 border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-indigo-600 shadow-sm"
+                        className="w-72 pl-9 pr-4 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-indigo-600"
                     />
                 </div>
             </div>
 
             {/* Sales Logs Table */}
-            <div className="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
+            <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm overflow-hidden">
                 <div className="overflow-x-auto">
                     <table className="w-full text-left text-xs border-collapse">
                         <thead>
-                            <tr className="bg-slate-900 text-white font-bold tracking-wider uppercase text-[11px]">
+                            <tr className="bg-slate-50 dark:bg-slate-950/60 border-b border-slate-200 dark:border-slate-800 text-[10px] uppercase font-bold text-slate-500 dark:text-slate-400">
                                 <th className="py-3.5 px-4">Invoice No</th>
                                 <th className="py-3.5 px-4">Date & Time</th>
                                 <th className="py-3.5 px-4">Customer</th>
@@ -94,7 +94,7 @@ export default function SalesHistoryPage() {
                                 <th className="py-3.5 px-4 text-center">Action</th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-slate-100 font-medium text-slate-700">
+                        <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60 font-medium">
                             {loading ? (
                                 <tr>
                                     <td colSpan="7" className="text-center py-10 text-slate-400">
@@ -118,34 +118,34 @@ export default function SalesHistoryPage() {
                                     });
 
                                     return (
-                                        <tr key={sale._id} className="hover:bg-slate-50/80 transition">
-                                            <td className="py-3.5 px-4 font-mono font-bold text-indigo-600">
+                                        <tr key={sale._id} className="hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition">
+                                            <td className="py-3.5 px-4 font-mono font-bold text-indigo-300">
                                                 {sale.invoiceNumber}
                                             </td>
-                                            <td className="py-3.5 px-4 text-slate-500">{dateStr}</td>
-                                            <td className="py-3.5 px-4 font-semibold text-slate-800">
+                                            <td className="py-3.5 px-4 text-slate-500 dark:text-slate-400">{dateStr}</td>
+                                            <td className="py-3.5 px-4 font-semibold text-slate-800 dark:text-slate-200">
                                                 {sale.customerName || "Walk-in"}
                                             </td>
                                             <td className="py-3.5 px-4">
-                                                <span className="bg-slate-100 text-slate-700 px-2.5 py-0.5 rounded-full font-bold">
+                                                <span className="bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 px-2.5 py-0.5 rounded-full font-bold border border-slate-200/60 dark:border-slate-700">
                                                     {sale.items?.length || 0}
                                                 </span>
                                             </td>
                                             <td className="py-3.5 px-4">
-                                                <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-[10px] font-bold bg-indigo-50 text-indigo-700">
+                                                <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-[10px] font-bold bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-400 border border-indigo-100 dark:border-indigo-800/50">
                                                     {sale.paymentMethod === "Cash" && <FaMoneyBillWave />}
                                                     {sale.paymentMethod === "Card" && <FaCreditCard />}
                                                     {sale.paymentMethod === "MFS" && <FaMobileAlt />}
                                                     {sale.paymentMethod}
                                                 </span>
                                             </td>
-                                            <td className="py-3.5 px-4 text-right font-black text-slate-900 text-sm">
+                                            <td className="py-3.5 px-4 text-right font-black text-slate-900 dark:text-white text-sm">
                                                 ৳{sale.total}
                                             </td>
                                             <td className="py-3.5 px-4 text-center">
                                                 <button
                                                     onClick={() => setSelectedInvoice(sale)}
-                                                    className="px-3 py-1.5 bg-slate-100 hover:bg-indigo-600 hover:text-white rounded-lg text-slate-700 font-bold transition flex items-center gap-1.5 mx-auto cursor-pointer"
+                                                    className="px-3 py-1.5 bg-slate-100 dark:bg-slate-800 hover:bg-indigo-600 dark:hover:bg-indigo-600 text-slate-700 dark:text-slate-200 hover:text-white dark:hover:text-white rounded-lg font-bold border border-slate-200/60 dark:border-slate-700 transition flex items-center gap-1.5 mx-auto cursor-pointer"
                                                 >
                                                     <FaPrint className="text-xs" /> View & Print
                                                 </button>
@@ -232,7 +232,7 @@ export default function SalesHistoryPage() {
                                 <div className="pt-1">
                                     <table className="w-full text-[11px]">
                                         <thead>
-                                            <tr className="border-b border-dashed border-slate-300 text-slate-600">
+                                            <tr className="hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition">
                                                 <th className="text-left pb-1">Item</th>
                                                 <th className="text-center pb-1">Qty</th>
                                                 <th className="text-right pb-1">Amount</th>

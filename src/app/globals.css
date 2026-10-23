@@ -1,11 +1,42 @@
 @import "tailwindcss";
-/* 
-/* Print Media Styles for 80mm Thermal Paper */
+
+/* Tailwind v4 class-based dark mode trigger */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* কাস্টম কালার থিম ভ্যারিয়েবল */
+@theme {
+  --color-primary: #4F46E5;
+  --color-primary-hover: #4338CA;
+  --color-primary-light: #EEF2FF;
+
+  --color-secondary: #0F172A;
+  --color-secondary-text: #64748B;
+
+  --color-accent-success: #10B981;
+  --color-accent-warning: #F59E0B;
+  --color-accent-danger: #F43F5E;
+
+  --color-surface: #F8FAFC;
+  --color-surface-card: #FFFFFF;
+  --color-surface-border: #E2E8F0;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+/* Print Media Styles for 80mm Thermal Receipt */
 @media print {
   body * {
     visibility: hidden;
   }
-  #receipt-print-area, #receipt-print-area * {
+  #receipt-print-area,
+  #receipt-print-area * {
     visibility: visible;
   }
   #receipt-print-area {
