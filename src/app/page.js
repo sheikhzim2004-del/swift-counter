@@ -12,6 +12,7 @@ import {
   FaArrowRight
 } from "react-icons/fa6";
 import { MdOutlineShoppingBag } from "react-icons/md";
+import TopSellingProducts from "@/components/TopSellingProducts";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
@@ -146,84 +147,95 @@ export default function DashboardPage() {
       </div>
 
       {/* Recent Sales History Overview */}
-      <motion.div
-        initial={{ opacity: 0, y: 15 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.3 }}
-        className="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-2xl shadow-sm overflow-hidden transition-colors"
-      >
-        <div className="p-5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
-          <div className="flex items-center gap-2.5">
-            <div className="p-2 rounded-lg bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 border border-indigo-100 dark:border-indigo-800/50">
-              <MdOutlineShoppingBag className="text-lg" />
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6 items-stretch">
+        {/* Left Column: Recent Completed Orders Table Card */}
+        <motion.div
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+          className="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-2xl shadow-sm overflow-hidden transition-colors flex flex-col h-full"
+        >
+          <div className="p-5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
+            <div className="flex items-center gap-2.5">
+              <div className="p-2 rounded-lg bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 border border-indigo-100 dark:border-indigo-800/50">
+                <MdOutlineShoppingBag className="text-lg" />
+              </div>
+              <div>
+                <h2 className="font-bold text-sm text-slate-900 dark:text-white">Recent Completed Orders</h2>
+                <p className="text-[11px] text-slate-400 dark:text-slate-500">Latest checkout memos synced with database</p>
+              </div>
             </div>
-            <div>
-              <h2 className="font-bold text-sm text-slate-900 dark:text-white">Recent Completed Orders</h2>
-              <p className="text-[11px] text-slate-400 dark:text-slate-500">Latest checkout memos synced with database</p>
-            </div>
+
+            <Link
+              href="/sales"
+              className="text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 flex items-center gap-1.5 transition-colors"
+            >
+              Full History <FaArrowRight className="text-[10px]" />
+            </Link>
           </div>
 
-          <Link
-            href="/sales"
-            className="text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 flex items-center gap-1.5 transition-colors"
-          >
-            Full History <FaArrowRight className="text-[10px]" />
-          </Link>
-        </div>
-
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs border-collapse">
-            <thead>
-              <tr className="bg-slate-50/80 dark:bg-slate-950/60 text-slate-500 dark:text-slate-400 font-bold uppercase text-[10px] tracking-wider border-b border-slate-100 dark:border-slate-800">
-                <th className="py-3 px-5">Invoice</th>
-                <th className="py-3 px-5">Customer</th>
-                <th className="py-3 px-5">Items</th>
-                <th className="py-3 px-5">Method</th>
-                <th className="py-3 px-5 text-right">Total</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-100 dark:divide-slate-800 font-medium text-slate-700 dark:text-slate-200">
-              {loading ? (
-                <tr>
-                  <td colSpan="5" className="py-8 text-center text-slate-400 dark:text-slate-500">
-                    Loading recent orders...
-                  </td>
+          <div className="overflow-x-auto flex-1">
+            <table className="w-full text-left text-xs border-collapse">
+              <thead>
+                <tr className="bg-slate-50/80 dark:bg-slate-950/60 text-slate-500 dark:text-slate-400 font-bold uppercase text-[10px] tracking-wider border-b border-slate-100 dark:border-slate-800">
+                  <th className="py-3 px-5">Invoice</th>
+                  <th className="py-3 px-5">Customer</th>
+                  <th className="py-3 px-5">Items</th>
+                  <th className="py-3 px-5">Method</th>
+                  <th className="py-3 px-5 text-right">Total</th>
                 </tr>
-              ) : metrics.recentSales.length === 0 ? (
-                <tr>
-                  <td colSpan="5" className="py-8 text-center text-slate-400 dark:text-slate-500">
-                    No sales recorded yet. Process an order from POS register.
-                  </td>
-                </tr>
-              ) : (
-                metrics.recentSales.map((sale) => (
-                  <tr key={sale._id} className="hover:bg-slate-50/60 dark:hover:bg-slate-800/40 transition">
-                    <td className="py-3 px-5 font-mono font-bold text-indigo-600 dark:text-indigo-400">
-                      {sale.invoiceNumber}
-                    </td>
-                    <td className="py-3 px-5 font-semibold text-slate-900 dark:text-slate-100">
-                      {sale.customerName || "Walk-in"}
-                    </td>
-                    <td className="py-3 px-5">
-                      <span className="bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200/60 dark:border-slate-700 px-2 py-0.5 rounded-full font-bold">
-                        {sale.items?.length || 0}
-                      </span>
-                    </td>
-                    <td className="py-3 px-5">
-                      <span className="text-[11px] font-bold text-slate-600 dark:text-slate-300">
-                        {sale.paymentMethod}
-                      </span>
-                    </td>
-                    <td className="py-3 px-5 text-right font-black text-slate-900 dark:text-white">
-                      ৳{sale.total}
+              </thead>
+              <tbody className="divide-y divide-slate-100 dark:divide-slate-800 font-medium text-slate-700 dark:text-slate-200">
+                {loading ? (
+                  <tr>
+                    <td colSpan="5" className="py-8 text-center text-slate-400 dark:text-slate-500">
+                      Loading recent orders...
                     </td>
                   </tr>
-                ))
-              )}
-            </tbody>
-          </table>
+                ) : metrics.recentSales.length === 0 ? (
+                  <tr>
+                    <td colSpan="5" className="py-8 text-center text-slate-400 dark:text-slate-500">
+                      No sales recorded yet. Process an order from POS register.
+                    </td>
+                  </tr>
+                ) : (
+                  metrics.recentSales.map((sale) => (
+                    <tr key={sale._id} className="hover:bg-slate-50/60 dark:hover:bg-slate-800/40 transition">
+                      <td className="py-3 px-5 font-mono font-bold text-indigo-600 dark:text-indigo-400">
+                        {sale.invoiceNumber}
+                      </td>
+                      <td className="py-3 px-5 font-semibold text-slate-900 dark:text-slate-100">
+                        {sale.customerName || "Walk-in"}
+                      </td>
+                      <td className="py-3 px-5">
+                        <span className="bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200/60 dark:border-slate-700 px-2 py-0.5 rounded-full font-bold">
+                          {sale.items?.length || 0}
+                        </span>
+                      </td>
+                      <td className="py-3 px-5">
+                        <span className="text-[11px] font-bold text-slate-600 dark:text-slate-300">
+                          {sale.paymentMethod}
+                        </span>
+                      </td>
+                      <td className="py-3 px-5 text-right font-black text-slate-900 dark:text-white">
+                        ৳{sale.total}
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+        </motion.div>
+
+        {/* Right Column: Top 5 Selling Products Card */}
+        <div className="h-full">
+          <TopSellingProducts
+            topProducts={metrics?.topSellingProducts || []}
+            loading={loading}
+          />
         </div>
-      </motion.div>
+      </div>
     </div>
   );
 }
