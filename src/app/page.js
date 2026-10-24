@@ -30,7 +30,15 @@ export default function DashboardPage() {
   const fetchDashboardData = async () => {
     try {
       setLoading(true);
-      const res = await fetch(`${API_BASE}/api/analytics/dashboard`);
+      const token = localStorage.getItem("pos_token");
+
+      const res = await fetch(`${API_BASE}/api/analytics/dashboard`, {
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
+        },
+      });
+
       const data = await res.json();
       if (data.success) {
         setMetrics(data.data);
@@ -49,8 +57,8 @@ export default function DashboardPage() {
   const statCards = [
     {
       title: "Today's Revenue",
-      value: `৳${metrics.todayRevenue.toLocaleString()}`,
-      subtitle: `${metrics.todayOrders} Orders completed today`,
+      value: `৳${(metrics.todayRevenue || 0).toLocaleString()}`, // 👈 নিরাপদ ফলব্যাক
+      subtitle: `${metrics.todayOrders || 0} Orders completed today`,
       icon: FaArrowTrendUp,
       color: "from-emerald-500 to-teal-600",
       accent: "text-emerald-500",
@@ -58,8 +66,8 @@ export default function DashboardPage() {
     },
     {
       title: "Total Revenue",
-      value: `৳${metrics.totalRevenue.toLocaleString()}`,
-      subtitle: `${metrics.totalOrders} Lifetime transactions`,
+      value: `৳${(metrics.totalRevenue || 0).toLocaleString()}`, // 👈 নিরাপদ ফলব্যাক
+      subtitle: `${metrics.totalOrders || 0} Lifetime transactions`,
       icon: FaReceipt,
       color: "from-indigo-600 to-blue-700",
       accent: "text-indigo-600",
@@ -67,7 +75,7 @@ export default function DashboardPage() {
     },
     {
       title: "Low Stock Alert",
-      value: metrics.lowStockCount,
+      value: metrics.lowStockCount || 0,
       subtitle: "Items below safe threshold (≤ 5)",
       icon: FaTriangleExclamation,
       color: "from-amber-500 to-orange-600",

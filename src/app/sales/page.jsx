@@ -24,7 +24,13 @@ export default function SalesHistoryPage() {
     const fetchSales = async () => {
         try {
             setLoading(true);
-            const res = await fetch(`${API_BASE}/api/sales`);
+            const token = localStorage.getItem("pos_token");
+
+            const res = await fetch(`${API_BASE}/api/sales`, {
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                },
+            });
             const data = await res.json();
             if (data.success) {
                 setSales(data.data);

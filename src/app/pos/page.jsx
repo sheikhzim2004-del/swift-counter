@@ -32,7 +32,17 @@ export default function POSPage() {
   // Load products from inventory
   const loadProducts = async () => {
     try {
-      const res = await fetch(`${API_BASE}/api/products?search=${encodeURIComponent(search)}`);
+      // ১. লোকালস্টোরেজ থেকে টোকেনটি নেওয়া
+      const token = localStorage.getItem("pos_token");
+
+      // ২. ফেচ রিকোয়েস্টে headers এর ভেতর Authorization টোকেন পাঠানো
+      const res = await fetch(`${API_BASE}/api/products?search=${encodeURIComponent(search)}`, {
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        }
+      });
+
       const data = await res.json();
       if (data.success) {
         setProducts(data.data);
@@ -40,7 +50,8 @@ export default function POSPage() {
     } catch (err) {
       console.error("Failed to load inventory:", err);
     }
-  };
+
+  }
 
   useEffect(() => {
     const delay = setTimeout(loadProducts, 250);
@@ -103,7 +114,10 @@ export default function POSPage() {
       setLoading(true);
       const res = await fetch(`${API_BASE}/api/sales`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${localStorage.getItem("pos_token")}`
+        },
         body: JSON.stringify({
           items: cart,
           subtotal,
@@ -167,8 +181,8 @@ export default function POSPage() {
                   disabled={outOfStock}
                   onClick={() => addToCart(item)}
                   className={`p-4 rounded-2xl border text-left flex flex-col justify-between transition-shadow relative overflow-hidden ${outOfStock
-                      ? "bg-slate-100/80 dark:bg-slate-800/40 border-slate-200 dark:border-slate-800 opacity-60 cursor-not-allowed"
-                      : "bg-white dark:bg-slate-900 border-slate-200/90 dark:border-slate-800 hover:border-indigo-500 dark:hover:border-indigo-500 hover:shadow-lg hover:shadow-indigo-500/5 cursor-pointer"
+                    ? "bg-slate-100/80 dark:bg-slate-800/40 border-slate-200 dark:border-slate-800 opacity-60 cursor-not-allowed"
+                    : "bg-white dark:bg-slate-900 border-slate-200/90 dark:border-slate-800 hover:border-indigo-500 dark:hover:border-indigo-500 hover:shadow-lg hover:shadow-indigo-500/5 cursor-pointer"
                     }`}
                 >
                   {/* Decorative Background Glow on Hover */}
@@ -196,10 +210,10 @@ export default function POSPage() {
 
                     <span
                       className={`text-[11px] font-bold px-2.5 py-0.5 rounded-full border ${outOfStock
-                          ? "bg-rose-100 dark:bg-rose-950/50 text-rose-700 dark:text-rose-400 border-rose-200 dark:border-rose-900/60"
-                          : isLowStock
-                            ? "bg-amber-100 dark:bg-amber-950/50 text-amber-700 dark:text-amber-400 border-amber-200 dark:border-amber-900/60"
-                            : "bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-400 border-emerald-100 dark:border-emerald-900/60"
+                        ? "bg-rose-100 dark:bg-rose-950/50 text-rose-700 dark:text-rose-400 border-rose-200 dark:border-rose-900/60"
+                        : isLowStock
+                          ? "bg-amber-100 dark:bg-amber-950/50 text-amber-700 dark:text-amber-400 border-amber-200 dark:border-amber-900/60"
+                          : "bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-400 border-emerald-100 dark:border-emerald-900/60"
                         }`}
                     >
                       {outOfStock ? "Out" : `${item.stockQuantity} left`}

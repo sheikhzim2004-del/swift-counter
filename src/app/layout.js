@@ -3,6 +3,8 @@ import "./globals.css";
 import Sidebar from "@/components/Sidebar";
 import Navbar from "@/components/Navbar";
 import ThemeProvider from "@/components/ThemeProvider";
+import AuthGuard from "@/components/AuthGuard";
+import { ToastContainer } from "react-toastify";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -36,7 +38,10 @@ export default function RootLayout({ children }) {
             <div className="flex-1 flex flex-col min-w-0 bg-slate-50 dark:bg-slate-950 transition-colors duration-200">
               <Navbar />
               <main className="flex-1 p-6 overflow-y-auto bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100">
-                {children}
+                <AuthGuard>
+                  {children}
+                  <ToastContainer position="top-right" autoClose={3000} theme="dark" />
+                  </AuthGuard>
               </main>
             </div>
           </div>

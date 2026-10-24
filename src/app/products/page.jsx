@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import { FaPlus, FaSearch, FaExclamationTriangle, FaEdit, FaTrash, FaTimes, FaBoxOpen } from "react-icons/fa";
 import { MdRefresh } from "react-icons/md";
 import { motion } from "framer-motion";
+import { toast } from "react-toastify";
+
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
@@ -13,6 +15,8 @@ export default function ProductsPage() {
     const [loading, setLoading] = useState(true);
     const [modalOpen, setModalOpen] = useState(false);
     const [editingId, setEditingId] = useState(null);
+    // Delete confirmation modal state
+    const [deleteTarget, setDeleteTarget] = useState(null); // { id: "...", title: "..." }
 
     // Form State
     const [formData, setFormData] = useState({
@@ -29,7 +33,18 @@ export default function ProductsPage() {
     const fetchProducts = async () => {
         try {
             setLoading(true);
-            const res = await fetch(`${API_BASE}/api/products?search=${encodeURIComponent(search)}`);
+            const token = localStorage.getItem("pos_token"); // ১. লোকালস্টোরেজ থেকে টোকেন নেওয়া
+            if (!token) {
+                toast.error("Session expired. Please log in again.");
+                return;
+            }
+
+            const res = await fetch(`${API_BASE}/api/products?search=${encodeURIComponent(search)}`, {
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}` // ২. হেডারে টোকেন পাঠানো
+                }
+            });
             const data = await res.json();
             if (data.success) {
                 setProducts(data.data);
@@ -56,7 +71,10 @@ export default function ProductsPage() {
             const method = editingId ? "PUT" : "POST";
             const res = await fetch(url, {
                 method: method,
-                headers: { "Content-Type": "application/json" },
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${localStorage.getItem("pos_token")}`
+                },
                 body: JSON.stringify(formData),
             });
             const data = await res.json();
@@ -96,22 +114,44 @@ export default function ProductsPage() {
         setModalOpen(true);
     };
 
-    //  product delete handler
-    const handleDelete = async (id, title) => {
-        if (!confirm(`Are you sure you want to remove "${title}"?`)) return;
+    // টেবিলে ট্র্যাশ আইকনে চাপ দিলে মডালটি খুলবে
+    const promptDelete = (product) => {
+        setDeleteTarget(product);
+    };
+
+    // Product delete handler
+    const handleDelete = async () => {
+        // deleteTarget না থাকলে রিটার্ন করবে
+        if (!deleteTarget) return;
 
         try {
-            const res = await fetch(`${API_BASE}/api/products/${id}`, {
+            const token = localStorage.getItem("pos_token");
+            if (!token) {
+                toast.error("Session expired. Please log in again.");
+                return;
+            }
+
+            // id-এর জায়গায় deleteTarget._id হবে
+            const res = await fetch(`${API_BASE}/api/products/${deleteTarget._id}`, {
                 method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`,
+                },
             });
+
             const data = await res.json();
             if (data.success) {
-                fetchProducts();
+                // title-এর জায়গায় deleteTarget.title হবে
+                toast.success(`"${deleteTarget.title}" deleted successfully!`);
+                fetchProducts(); // টেবিল রিফ্রেশ করা
             } else {
-                alert(data.message || "Failed to delete");
+                toast.error(data.message || "Failed to delete");
             }
         } catch (err) {
-            console.error("Delete error:", err);
+            toast.error("Something went wrong while deleting");
+        } finally {
+            setDeleteTarget(null); // মডাল বন্ধ করা
         }
     };
 
@@ -255,8 +295,8 @@ export default function ProductsPage() {
                                                         <FaEdit className="text-sm" />
                                                     </button>
                                                     <button
-                                                        onClick={() => handleDelete(p._id, p.title)}
-                                                        className="p-1.5 text-rose-500 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/50 rounded-lg transition-colors cursor-pointer"
+                                                        onClick={() => promptDelete(p)} // পুরো product অবজেক্ট পাঠানো হচ্ছে
+                                                        className="p-1.5 rounded-lg text-slate-400 hover:text-rose-500 hover:bg-rose-500/10 transition"
                                                         title="Delete Product"
                                                     >
                                                         <FaTrash className="text-xs" />
@@ -376,6 +416,45 @@ export default function ProductsPage() {
                                 </button>
                             </div>
                         </form>
+                    </div>
+                </div>
+            )}
+
+            {/* Custom Delete Confirmation Modal */}
+            {deleteTarget && (
+                <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-xs flex items-center justify-center p-4">
+                    <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 w-full max-w-sm shadow-2xl space-y-4 text-center">
+                        <div className="w-12 h-12 rounded-2xl bg-rose-500/10 border border-rose-500/20 text-rose-500 flex items-center justify-center mx-auto text-xl">
+                            🗑️
+                        </div>
+
+                        <div>
+                            <h3 className="text-base font-bold text-white">Delete Product</h3>
+                            <p className="text-xs text-slate-400 mt-1">
+                                Are you sure you want to remove{" "}
+                                <span className="text-rose-400 font-semibold">
+                                    "{deleteTarget.title}"
+                                </span>
+                                ? This action cannot be undone.
+                            </p>
+                        </div>
+
+                        <div className="flex gap-2.5 pt-2">
+                            <button
+                                type="button"
+                                onClick={() => setDeleteTarget(null)}
+                                className="flex-1 py-2 rounded-xl border border-slate-700 hover:bg-slate-800 text-xs font-semibold text-slate-300 transition cursor-pointer"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                type="button"
+                                onClick={handleDelete}
+                                className="flex-1 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold transition cursor-pointer"
+                            >
+                                Yes, Delete
+                            </button>
+                        </div>
                     </div>
                 </div>
             )}
