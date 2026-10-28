@@ -3,6 +3,7 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+
 import {
   FaSearch,
   FaPlus,
@@ -16,6 +17,7 @@ import {
   FaTag
 } from "react-icons/fa";
 import { MdOutlineShoppingBag, MdLayers } from "react-icons/md";
+import QuickAddModal from "@/components/QuickAddModal";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
@@ -28,6 +30,18 @@ export default function POSPage() {
   const [customerName, setCustomerName] = useState("");
   const [loading, setLoading] = useState(false);
   const [successModal, setSuccessModal] = useState(null);
+  const [isQuickAddOpen, setIsQuickAddOpen] = useState(false);
+
+  // প্রোডাক্ট সফলভাবে অ্যাড হলে যা ঘটবে
+  const handleQuickAddSuccess = (newProduct) => {
+    if (typeof loadProducts === "function") {
+      loadProducts(); // প্রডাক্ট তালিকা রিফ্রেশ
+    }
+    if (typeof addToCart === "function") {
+      addToCart(newProduct); // সাথে সাথে কার্টে অ্যাড
+    }
+  };
+
 
   // Load products from inventory
   const loadProducts = async () => {
@@ -149,16 +163,28 @@ export default function POSPage() {
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 h-[calc(100vh-6.5rem)]">
       {/* ================= LEFT SECTION: Product Catalog (7 Cols) ================= */}
       <div className="lg:col-span-7 flex flex-col gap-4 h-full">
-        {/* Search Bar with Glow Accent */}
-        <div className="relative group">
-          <FaSearch className="absolute left-4 top-3.5 text-slate-400 dark:text-slate-500 group-focus-within:text-indigo-600 dark:group-focus-within:text-indigo-400 transition" />
-          <input
-            type="text"
-            placeholder="Search items by product title, brand or barcode SKU..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-11 pr-4 py-3 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 border border-slate-200 dark:border-slate-800 rounded-2xl text-sm font-medium focus:outline-none focus:ring-4 focus:ring-indigo-500/10 dark:focus:ring-indigo-500/20 focus:border-indigo-600 dark:focus:border-indigo-500 shadow-sm transition"
-          />
+        <div className="flex items-center gap-3 w-full">
+
+          {/* Search bar container with flex-1 to take available space */}
+          <div className="relative group flex-1">
+            <FaSearch className="absolute left-4 top-3.5 text-slate-400 dark:text-slate-500 group-focus-within:text-indigo-600 dark:group-focus-within:text-indigo-400 transition" />
+            <input
+              type="text"
+              placeholder="Search items by product title, brand or barcode SKU..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="w-full pl-11 pr-4 py-2.5 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 border border-slate-200 dark:border-slate-800 rounded-2xl text-sm font-medium focus:outline-none focus:ring-4 focus:ring-indigo-500/10 dark:focus:ring-indigo-500/20 focus:border-indigo-600 dark:focus:border-indigo-500 shadow-sm transition"
+            />
+          </div>
+
+          {/* Quick Add Button pushed to the end */}
+          <button
+            type="button"
+            onClick={() => setIsQuickAddOpen(true)}
+            className="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-2xl text-xs font-bold transition flex items-center gap-1.5 whitespace-nowrap cursor-pointer shadow-lg shadow-emerald-950 shrink-0"
+          >
+            <span className="text-sm font-bold">+</span> Quick Add
+          </button>
         </div>
 
         {/* Product Cards Grid with Stagger & Hover Scale */}
@@ -440,6 +466,13 @@ export default function POSPage() {
           </div>
         )}
       </AnimatePresence>
+
+      {/* ================= QUICK ADD MODAL ================= */}
+      <QuickAddModal
+        isOpen={isQuickAddOpen}
+        onClose={() => setIsQuickAddOpen(false)}
+        onSuccess={handleQuickAddSuccess}
+      />
     </div>
   );
 }
