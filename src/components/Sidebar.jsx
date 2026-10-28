@@ -7,14 +7,14 @@ import {
     MdDashboard,
     MdPointOfSale,
     MdInventory,
-    MdReceiptLong
+    MdReceiptLong,
 } from "react-icons/md";
 
-// roles দিয়ে ডিফাইন করা কোন রোলের জন্য কোন মেনু দৃশ্যমান হবে
+// roles দিয়ে নির্ধারণ: Dashboard ও Products শুধু admin দেখবে, বাকিগুলো উভয়ই
 const navItems = [
-    { name: "Dashboard", href: "/", icon: MdDashboard, roles: ["admin", "cashier"] },
+    { name: "Dashboard", href: "/dashboard", icon: MdDashboard, roles: ["admin"] },
     { name: "POS Counter", href: "/pos", icon: MdPointOfSale, roles: ["admin", "cashier"] },
-    { name: "Products", href: "/products", icon: MdInventory, roles: ["admin"] }, // শুধুমাত্র Admin দেখতে পাবে
+    { name: "Products", href: "/products", icon: MdInventory, roles: ["admin"] },
     { name: "Sales History", href: "/sales", icon: MdReceiptLong, roles: ["admin", "cashier"] },
 ];
 
@@ -23,20 +23,21 @@ export default function Sidebar() {
     const [userRole, setUserRole] = useState(null);
 
     useEffect(() => {
+        // শুধু ইউজারের রোল রিড করবে
         const storedUser = localStorage.getItem("pos_user");
         if (storedUser) {
             try {
                 const parsed = JSON.parse(storedUser);
                 setUserRole(parsed.role?.toLowerCase() || "cashier");
             } catch (err) {
-                console.error("Failed to parse user role in sidebar:", err);
+                console.error("Failed to parse user in sidebar:", err);
             }
         }
     }, []);
 
-    // ইউজার রোল অনুযায়ী মেনু ফিল্টার করা (ডাটা লোড হওয়ার আগ পর্যন্ত সেফটি হিসেবে admin ও cashier উভয়কে দেখানো)
+    // ইউজার রোল অনুযায়ী মেনু ফিল্টার করা
     const visibleNavItems = navItems.filter((item) => {
-        if (!userRole) return true;
+        if (!userRole) return false; // রোল লোড হওয়া পর্যন্ত অপেক্ষা করবে
         return item.roles.includes(userRole);
     });
 
@@ -50,7 +51,9 @@ export default function Sidebar() {
                             SC
                         </div>
                         <div>
-                            <h1 className="text-lg font-bold tracking-wide dark:text-white">SwiftCounter</h1>
+                            <h1 className="text-lg font-bold tracking-wide dark:text-white">
+                                SwiftCounter
+                            </h1>
                             <p className="text-xs text-slate-400">Retail POS v1.0</p>
                         </div>
                     </div>
@@ -60,10 +63,12 @@ export default function Sidebar() {
                         <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700/60">
                             Role:
                         </span>
-                        <span className={`text-[10px] uppercase font-black tracking-wider px-2 py-0.5 rounded-full border ${userRole === "admin"
-                                ? "bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-500/30"
-                                : "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/30"
-                            }`}>
+                        <span
+                            className={`text-[10px] uppercase font-black tracking-wider px-2 py-0.5 rounded-full border ${userRole === "admin"
+                                    ? "bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-500/30"
+                                    : "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/30"
+                                }`}
+                        >
                             {userRole ? userRole.toUpperCase() : "AUTHENTICATING..."}
                         </span>
                     </div>
@@ -94,7 +99,9 @@ export default function Sidebar() {
 
             {/* Quick Status */}
             <div className="p-3 bg-slate-100 dark:bg-slate-800/80 rounded-lg border border-slate-200 dark:border-slate-700/50 text-xs text-slate-600 dark:text-slate-400">
-                <p className="font-semibold text-slate-800 dark:text-slate-200">System Ready</p>
+                <p className="font-semibold text-slate-800 dark:text-slate-200">
+                    System Ready
+                </p>
                 <p className="text-[11px] text-emerald-500 dark:text-emerald-400 flex items-center gap-1.5 mt-1 font-medium">
                     <span className="w-2 h-2 rounded-full bg-emerald-500 inline-block animate-pulse"></span>
                     Terminal Connected
